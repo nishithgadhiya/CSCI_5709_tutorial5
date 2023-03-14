@@ -23,11 +23,16 @@ router.get("/users", (req, res) => {
 
 //get specific user details
 router.get("/user/:id", (req, res) => {
-  const inputId = req.params.id;
-  if (inputId) {
-    const user = users.filter((item) => item.id === inputId);
-    res.status(200).json({ success: true, user });
-  } else {
+  try {
+    const inputId = req.params.id;
+    // checking :id is passed or not
+    if (inputId.length > 3) {
+      const user = users.filter((item) => item.id === inputId);
+      res.status(200).json({ success: true, user });
+    } else {
+      res.status(400).json({ message: "Bad request invalid parameters" });
+    }
+  } catch (error) {
     res.status(500).json({ message: "Error" });
   }
 });
@@ -35,17 +40,28 @@ router.get("/user/:id", (req, res) => {
 // update specific user details
 router.post("/update/:id", (req, res) => {
   try {
-    const inputId = req.params.id;
+    const inputId = req.params["id"];
     const input = req.body;
+    let userFound = false;
 
-    if (input?.email && input?.firstName) {
+    // checking email, firstname and :id is passed or not
+    if (input?.email && input?.firstName && inputId.length > 3) {
       users.forEach((item) => {
         if (item.id === inputId) {
+          userFound = true;
           item.email = input.email;
           item.firstName = input.firstName;
         }
       });
-      res.status(200).json({ message: "User updated", success: true });
+
+      if (userFound) {
+        res.status(200).json({ message: "User updated", success: true });
+      } else {
+        res.status(400).json({
+          message: "Bad request! No user found with this id",
+          success: false,
+        });
+      }
     } else {
       res.status(400).json({ message: "Bad request invalid parameters" });
     }
