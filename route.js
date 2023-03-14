@@ -22,7 +22,7 @@ router.get("/users", (req, res) => {
 });
 
 //get specific user details
-router.get("/users/:id", (req, res) => {
+router.get("/user/:id", (req, res) => {
   const inputId = req.params.id;
   if (inputId) {
     const user = users.filter((item) => item.id === inputId);
