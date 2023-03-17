@@ -38,7 +38,7 @@ router.get("/user/:id", (req, res) => {
 });
 
 // update specific user details
-router.post("/update/:id", (req, res) => {
+router.put("/update/:id", (req, res) => {
   try {
     const inputId = req.params["id"];
     const input = req.body;
